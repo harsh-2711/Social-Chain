@@ -15,6 +15,10 @@ node_identifier = str(uuid4()).replace('-','')
 # Initiates the Blockchain
 blockchain = Blockchain()
 
+@app.route('/')
+def welcome():
+    return "App is deployed"
+
 @app.route('/mine', methods=['GET'])
 def mine():
     # Running proof of work algorithm to get the next proof...
