@@ -16,7 +16,7 @@ node_identifier = str(uuid4()).replace('-','')
 blockchain = Blockchain()
 
 @app.route('/')
-def welcome():
+def index():
     return "App is deployed"
 
 @app.route('/mine', methods=['GET'])
