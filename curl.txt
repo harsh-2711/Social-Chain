@@ -1,0 +1,8 @@
+Curl for POST - 
+
+curl -X POST -H "Content-Type: application/json" -d '{"sender": "addr1", "recipient": "addr2", "amount": 3}' "http://127.0.0.1:5000/create-transaction" 
+
+
+Curl for GET - 
+
+curl "http://127.0.0.1:5000/chain"
