@@ -5,10 +5,11 @@ import json
 from flask import Flask, jsonify, request
 
 from Blockchain import Blockchain
+from database import TransactionDB
+from transactions import Transaction
 
 import account
-
-from database import TransactionDB
+import transactions
 
 import time
 
@@ -77,13 +78,16 @@ def new_transaction():
     if not all(k in values for k in required):
         return 'Missing values', 400
 
+    ############
+    transaction = Transaction(values['sender'], values['recipient'], values['amount'])
+    index_temp = transaction.addToLocalDB()
+    transactions.addToTransferQueue("ae3739da434f581b98a84b842aa38edce439c0aa651a1e454dbcdfd6332a7cb9")
+    #############
+
     # Create a new Transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
-    tdb = TransactionDB()
-    tdb.insert(values)
-
-    response = {'message': f'Transaction will be added to Block {index}'}
+    response = {'message': f'Transaction will be added to Block {index} and temp index is {index_temp}'}
     return jsonify(response), 201
 
 @app.route('/chain', methods=['GET'])

@@ -5,7 +5,7 @@ import os
 BASEDBPATH = 'data'
 BLOCKFILE = 'block'
 TXFILE = 'tx'
-UNTXFILE = 'untx'
+LTXFILE = 'ltx'
 ACCOUNTFILE = 'account'
 NODEFILE = 'node'
 
@@ -101,7 +101,7 @@ class BlockChainDB(BaseDB):
 
 class TransactionDB(BaseDB):
     '''
-    Transactions that save with blockchain.
+    True Transactions of blockchain.
     '''
     def set_path(self):
         self.filepath = TXFILE
@@ -120,15 +120,37 @@ class TransactionDB(BaseDB):
         for tx in txs:
             self.hash_insert(tx)
 
-class UnTransactionDB(TransactionDB):
+    def getIndex(self):
+        counter = 0
+        for item in self.find_all():
+            counter += 1
+        counter +=1
+        return counter
+
+class LocalTransactionDB(BaseDB):
     '''
-    Transactions that doesn't store in blockchain.
+    Local Transactions.
     '''
     def set_path(self):
-        self.filepath = UNTXFILE
+        self.filepath = LTXFILE
 
-    def all_hashes(self):
-        hashes = []
+    def find(self, hash):
+        one = {}
         for item in self.find_all():
-            hashes.append(item['hash'])
-        return hashes
+            if item['hash'] == hash:
+                one = item
+                break
+        return one
+
+    def insert(self, txs):
+        if not isinstance(txs,list):
+            txs = [txs]
+        for tx in txs:
+            self.hash_insert(tx)
+
+    def getIndex(self):
+        counter = 0
+        for item in self.find_all():
+            counter += 1
+        counter +=1
+        return counter
