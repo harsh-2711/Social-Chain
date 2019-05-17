@@ -32,10 +32,7 @@ class Transaction():
 
     	return ldb.getIndex()
 
-def addToTransferQueue(hash):
-	
-	ldb = LocalTransactionDB()
-	trs = ldb.find(hash)
+def writeToFile(trs):
 
 	f = open('data/queue', 'r')
 	lines = f.readlines()
@@ -49,3 +46,17 @@ def addToTransferQueue(hash):
 		f.write(str(line))
 
 	f.close()
+
+def addToTransferQueue_Hash(hash):
+	
+	ldb = LocalTransactionDB()
+	trs = ldb.find(hash)
+
+	writeToFile(trs)
+
+def addToTransferQueue_Index(localIndex):
+	
+	ldb = LocalTransactionDB()
+	trs = ldb.find_with_index(localIndex)
+
+	writeToFile(trs)

@@ -6,7 +6,7 @@ from flask import Flask, jsonify, request
 
 from Blockchain import Blockchain
 from database import TransactionDB
-from transactions import Transaction
+from transactions import Transaction, LocalTransactionDB
 
 import account
 import transactions
@@ -78,17 +78,43 @@ def new_transaction():
     if not all(k in values for k in required):
         return 'Missing values', 400
 
-    ############
-    transaction = Transaction(values['sender'], values['recipient'], values['amount'])
-    index_temp = transaction.addToLocalDB()
-    transactions.addToTransferQueue("ae3739da434f581b98a84b842aa38edce439c0aa651a1e454dbcdfd6332a7cb9")
-    #############
-
     # Create a new Transaction
-    index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
+    transaction = Transaction(values['sender'], values['recipient'], values['amount'])
+    index = transaction.addToLocalDB()
+    
+    #index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
-    response = {'message': f'Transaction will be added to Block {index} and temp index is {index_temp}'}
+    response = {'message': f'Transaction will be added to Block {index}'}
     return jsonify(response), 201
+
+@app.route('/transactions/add/queue', methods=['POST'])
+def addTransactionToQueue():
+    values = request.get_json()
+
+    required = ['hash', 'index']
+    if not any(k in values for k in required):
+        return 'Missing values', 400
+
+    ldb = LocalTransactionDB()
+
+    err_hash_resp = {'message': f'Incorrect Hash'}
+    err_index_resp = {'message': f'Incorrect Index'}
+    succ_resp = {'message': f'Transaction added to queue successfully'}
+
+    if 'hash' in values:
+        item = ldb.find(values['hash'])
+        if len(item) < 1:
+            return jsonify(err_hash_resp), 401
+        else:
+            transactions.addToTransferQueue_Hash(values['hash'])
+            return jsonify(succ_resp), 200
+    else:
+        item = ldb.find(values['index'])
+        if len(item) < 1:
+            return jsonify(err_index_resp), 401
+        else:
+            transactions.addToTransferQueue_Index(values['index'])
+            return jsonify(succ_resp), 200
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
