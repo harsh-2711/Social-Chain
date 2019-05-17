@@ -8,6 +8,10 @@ from Blockchain import Blockchain
 
 import account
 
+from database import TransactionDB
+
+import time
+
 # Instantiates the node
 app = Flask(__name__)
 
@@ -75,6 +79,9 @@ def new_transaction():
 
     # Create a new Transaction
     index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
+
+    tdb = TransactionDB()
+    tdb.insert(values)
 
     response = {'message': f'Transaction will be added to Block {index}'}
     return jsonify(response), 201
