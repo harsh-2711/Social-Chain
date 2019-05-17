@@ -6,6 +6,8 @@ from flask import Flask, jsonify, request
 
 from Blockchain import Blockchain
 
+import account
+
 # Instantiates the node
 app = Flask(__name__)
 
@@ -18,6 +20,21 @@ blockchain = Blockchain()
 @app.route('/')
 def index():
     return "App is deployed"
+
+@app.route('/new_account', methods=['GET'])
+def new_account():
+    private_key, public_key, address = account.new_account()
+    response = {
+        'Private Key': private_key,
+        'Public Key': public_key,
+        'Address': address
+    }
+    return jsonify(response), 200
+
+@app.route('/get_account', methods=['GET'])
+def get_account():
+    latest_account = account.get_account()
+    return jsonify(latest_account), 200
 
 @app.route('/mine', methods=['GET'])
 def mine():
