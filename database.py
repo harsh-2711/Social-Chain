@@ -154,3 +154,11 @@ class LocalTransactionDB(BaseDB):
             counter += 1
         counter +=1
         return counter
+
+    def find_with_index(self, local_index):
+        one = {}
+        for item in self.find_all():
+            if item['localIndex'] == local_index:
+                one = item
+                break
+        return one
