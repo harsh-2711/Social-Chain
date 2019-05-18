@@ -34,18 +34,20 @@ class Transaction():
 
 def writeToFile(trs):
 
-	f = open('data/queue', 'r')
-	lines = f.readlines()
-	f.close()
+	with open('data/queue', 'r+') as f:
+	    raw = f.readline()
+	    if len(raw) > 0:
+	    	data = json.loads(raw)
+	    else:
+	    	data = []
 
-	lines.append(trs)
+	if isinstance(trs,list):
+	    data = data + trs
+	else:
+	    data.append(trs)
 
-	f = open('data/queue', 'w')
-
-	for line in lines:
-		f.write(str(line))
-
-	f.close()
+	with open('data/queue', 'w+') as f:
+	    f.write(json.dumps(data))
 
 def addToTransferQueue_Hash(hash):
 	
@@ -60,3 +62,30 @@ def addToTransferQueue_Index(localIndex):
 	trs = ldb.find_with_index(localIndex)
 
 	writeToFile(trs)
+
+def getTransferQueue():
+
+	f = open('data/queue', 'r+')
+	raw = f.readline()
+	f.close()
+
+	try:
+		data = json.loads(raw)
+	except:
+		data = []
+
+	return data
+
+def getA():
+	f = open('data/queue', 'r+')
+	raw = f.readline()
+	f.close()
+
+	data = json.loads(raw)
+	return data
+
+def emptyQueue():
+
+	f = open('data/queue', 'w')
+	f.write("")
+	f.close()

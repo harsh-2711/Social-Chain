@@ -7,6 +7,9 @@ from uuid import uuid4
 from urllib.parse import urlparse
 import requests
 
+import transactions
+from database import TransactionDB
+
 class Blockchain(object):
 
     def __init__(self):
@@ -29,10 +32,23 @@ class Blockchain(object):
 
         :return: <dict> New block
         '''
-        
+
+        # Get all transactions from transaction queue
+        allTransactions = transactions.getTransferQueue()
+
+        for trans in allTransactions:
+            self.current_transactions.append(trans)
+
+        tdb = TransactionDB()
+        try:
+            lastIndex = tdb.getIndex()
+        except:
+            lastIndex = 0
+        #print(lastIndex)
+
         block = {
-            'index': len(self.chain) + 1,
-            'timestamp': time(),
+            'index': lastIndex + 1,
+            'timestamp': int(time()),
             'transactions': self.current_transactions,
             'proof': proof,
             'previous_hash': previous_hash or self.hash(self.chain[-1]),
@@ -42,9 +58,14 @@ class Blockchain(object):
         self.current_transactions = []
 
         self.chain.append(block)
+
+        tdb.insert(block)
+
+        transactions.emptyQueue()
+
         return block
 
-    def new_transaction(self, sender, recipient, amount):
+    def new_transaction(self, timestamp, sender, recipient, amount, hash_key, localIndex):
         '''
         Creates a new transaction to move to the newly mined block
 
@@ -56,9 +77,12 @@ class Blockchain(object):
         '''
 
         self.current_transactions.append({
+            'timestamp': timestamp,
             'sender': sender,
             'recipient': recipient,
             'amount': amount,
+            'hash': hash_key,
+            'localIndex': localIndex
         })
 
         return self.last_block['index'] + 1

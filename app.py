@@ -5,22 +5,27 @@ import json
 from flask import Flask, jsonify, request
 
 from Blockchain import Blockchain
-from database import TransactionDB
-from transactions import Transaction, LocalTransactionDB
+from database import TransactionDB, LocalTransactionDB
+from transactions import Transaction
 
 import account
 import transactions
 
 import time
 
+import hashlib
+
 # Instantiates the node
 app = Flask(__name__)
 
 # Generates a globally unique address for this node
-node_identifier = str(uuid4()).replace('-','')
+miner = str(uuid4()).replace('-','')
 
 # Initiates the Blockchain
 blockchain = Blockchain()
+
+# Percentage cut from total amount
+perc_cut = 0.1
 
 @app.route('/')
 def index():
@@ -43,17 +48,36 @@ def get_account():
 
 @app.route('/mine', methods=['GET'])
 def mine():
+    # TO DO: Sync current chain with true chain
+
     # Running proof of work algorithm to get the next proof...
-    last_block = blockchain.last_block
+    tdb = TransactionDB()
+    try:
+        lastIndex = tdb.getIndex()
+    except:
+        lastIndex = 1
+    last_block = tdb.find_with_index(lastIndex)
+    #print(last_block)
     last_proof = last_block['proof']
     proof = blockchain.proof_of_work(last_proof)
+
+    # Get all transactions from transaction queue
+    allTransactions = transactions.getTransferQueue()
+    print(allTransactions)
+    totalAmount = 0
+
+    for trans in allTransactions:
+        totalAmount += trans['amount']
 
     # Provide a reward for finding the proof.
     # The sender is "0" to signify that this node has mined a new coin.
     blockchain.new_transaction(
+        timestamp=int(time.time()),
         sender="0",
-        recipient=node_identifier,
-        amount=1,
+        recipient=miner,
+        amount=(totalAmount*perc_cut)/100,
+        hash_key=hashlib.sha256((str(int(time.time()))).encode('utf-8')).hexdigest(),
+        localIndex=0
     )
 
     # Forge the new Block by adding it to the chain
@@ -84,7 +108,7 @@ def new_transaction():
     
     #index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
-    response = {'message': f'Transaction will be added to Block {index}'}
+    response = {'message': f'Transaction will be added to Block {index-1}'}
     return jsonify(response), 201
 
 @app.route('/transactions/add/queue', methods=['POST'])
@@ -109,8 +133,8 @@ def addTransactionToQueue():
             transactions.addToTransferQueue_Hash(values['hash'])
             return jsonify(succ_resp), 200
     else:
-        item = ldb.find(values['index'])
-        if len(item) < 1:
+        item = ldb.find_with_index(values['index'])
+        if not item:
             return jsonify(err_index_resp), 401
         else:
             transactions.addToTransferQueue_Index(values['index'])

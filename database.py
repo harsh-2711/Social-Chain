@@ -55,11 +55,20 @@ class BaseDB():
     def hash_insert(self, item):
         exists = False
         for i in self.find_all():
-            if item['hash'] == i['hash']:
+            if item['index'] == i['index']:
                 exists = True
                 break
         if not exists:
             self.write(item)  
+
+    def hash_local_insert(self, item):
+        exists = False
+        for i in self.find_all():
+            if item['localIndex'] == i['localIndex']:
+                exists = True
+                break
+        if not exists:
+            self.write(item)
 
 class NodeDB(BaseDB):
 
@@ -99,6 +108,9 @@ class BlockChainDB(BaseDB):
     def insert(self, item):
         self.hash_insert(item)
 
+    def local_insert(self, item):
+        self.hash_local_insert(item)
+
 class TransactionDB(BaseDB):
     '''
     True Transactions of blockchain.
@@ -115,17 +127,26 @@ class TransactionDB(BaseDB):
         return one
 
     def insert(self, txs):
+
         if not isinstance(txs,list):
             txs = [txs]
         for tx in txs:
             self.hash_insert(tx)
-
-    def getIndex(self):
+        
+    def getIndex(self):   
         counter = 0
         for item in self.find_all():
             counter += 1
-        counter +=1
+        counter += 1
         return counter
+
+    def find_with_index(self, index):
+        one = {}
+        for item in self.find_all():
+            if item['index'] == index:
+                one = item
+                break
+        return one
 
 class LocalTransactionDB(BaseDB):
     '''
@@ -146,7 +167,7 @@ class LocalTransactionDB(BaseDB):
         if not isinstance(txs,list):
             txs = [txs]
         for tx in txs:
-            self.hash_insert(tx)
+            self.hash_local_insert(tx)
 
     def getIndex(self):
         counter = 0
