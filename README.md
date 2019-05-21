@@ -49,4 +49,4 @@ A SocialChain block is as follows:
 }
 ```
 
-Comparing the two blocks, it is evident that the SocialCHain block contains more information then normal bitcoin block.
+Comparing the two blocks, it is evident that the SocialChain block contains more information then normal bitcoin block.
