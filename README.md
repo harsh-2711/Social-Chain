@@ -36,6 +36,24 @@ $ deactivate
 $ pip install requirements.txt
 ```
 
+## Project Structure
+
+- [Blockchain.py](https://github.com/harsh-2711/Social-Chain/blob/master/Blockchain.py) - All the functions ehich are needed to build a blockchain
+
+- [app.py](https://github.com/harsh-2711/Social-Chain/blob/master/app.py) - Code to create Flask APIs for using the SocialChain
+
+- [account.py](https://github.com/harsh-2711/Social-Chain/blob/master/account.py) - Functions related to account maintenance of a user
+
+- [database.py](https://github.com/harsh-2711/Social-Chain/blob/master/database.py) - Functions related to creation and maintenance of database (Used mainly during transactions)
+
+- [model.py](https://github.com/harsh-2711/Social-Chain/blob/master/model.py) - Basic class to provide default attribute to database variables
+
+- [transactions.py](https://github.com/harsh-2711/Social-Chain/blob/master/transactions.py) - Contains function for doing local transaction, universal transaction and transfering local transactions to TransferQueue
+
+- [data](https://github.com/harsh-2711/Social-Chain/tree/master/data) (Folder) - Database files keeping record of the local and universal transactions
+
+- [lib](https://github.com/harsh-2711/Social-Chain/tree/master/lib) (Folder) - Basic utilities and hashing algorithms
+
 ## About block
 
 The blockchain is a data structure that is linked sequentially from back to forward by blocks containing transaction information. SHA256 cryptographic hashing is performed on each block header to generate a hash value. 
