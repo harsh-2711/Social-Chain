@@ -4,6 +4,38 @@
 
 Social Chain is an implementation of blockchain for social cause. This chain aims to decentralise and transparentize the process of crowd funding. The target of the project is to let the contributors see where their donated money are invested and/or to whom they are given, hence the frauds can be prevented. The transactions are also secured due to mechanism of blockchain. Apart from social cause, the chain after adding some functionalities can also be used for multiple B2B transactions which will be further discussed and integrated.
 
+## Installation
+
+1. Make sure Python 3.6+ is installed
+2. Git clone
+```
+$ git clone https://github.com/harsh-2711/SocialChain.git
+$ cd SocialChain
+```
+
+3. Create a virtual environment (recommended)
+```
+$ virtualenv env
+```
+NOTE: If virtual environment isn't installed on the local system the do -
+```
+$ pip install virtualenv
+```
+
+4. Activate virtual environment
+```
+$ source env/bin/activate
+```
+NOTE: To deactivate the virtual environment use
+```
+$ deactivate
+```
+
+5. Install requirements
+```
+$ pip install requirements.txt
+```
+
 ## About block
 
 The blockchain is a data structure that is linked sequentially from back to forward by blocks containing transaction information. SHA256 cryptographic hashing is performed on each block header to generate a hash value. 
