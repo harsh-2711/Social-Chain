@@ -50,9 +50,32 @@ $ pip install requirements.txt
 
 - [transactions.py](https://github.com/harsh-2711/Social-Chain/blob/master/transactions.py) - Contains function for doing local transaction, universal transaction and transfering local transactions to TransferQueue
 
-- [data](https://github.com/harsh-2711/Social-Chain/tree/master/data) (Folder) - Database files keeping record of the local and universal transactions
+- [data](https://github.com/harsh-2711/Social-Chain/tree/master/data) - Database files keeping record of the local and universal transactions
 
-- [lib](https://github.com/harsh-2711/Social-Chain/tree/master/lib) (Folder) - Basic utilities and hashing algorithms
+- [lib](https://github.com/harsh-2711/Social-Chain/tree/master/lib) - Basic utilities and hashing algorithms
+
+## Using APIs
+
+- Run the [app.py](https://github.com/harsh-2711/Social-Chain/blob/master/app.py) file
+```
+$ python app.py
+```
+
+- Open the generated localhost in the web browser. If it shows the message `App is deployed` then the app is good to go
+
+- Following are the commands that you can enter after the localhost URL to use the SocialChain
+
+|  Queries                |  Request   |  Params                            |  Response Message                                      |
+|-------------------------|------------|------------------------------------|--------------------------------------------------|
+| /new_account            |    GET     |  NONEED                            |  Public and private key along with address       |
+| /get_account            |    GET     |  NONEED                            |  Latest account credentials                      |
+| /mine                   |    GET     |  NONEED                            |  Details of the new block forged                 |
+| /transactions/new       |    POST    |  sender, receipent, amount         |  Local block number where transaction is saved               |
+| /transactions/add/queue |    POST    |  Hash or local index of transaction|  Added successfully or error message (if incorrect values)|
+| /chain                  |    GET     |  NONEED                            |  Get full chain                                            |
+| /nodes/register         |    POST    |  IP of nodes                       |  List of nodes added                                  |
+| /nodes/resolve          |    GET     |  NONEED                            |  If the local chain is modified or not based on the universal chain|
+
 
 ## About block
 
