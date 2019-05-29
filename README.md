@@ -9,7 +9,7 @@ Social Chain is an implementation of blockchain for social cause. This chain aim
 1. Make sure Python 3.6+ is installed
 2. Git clone
 ```
-$ git clone https://github.com/harsh-2711/SocialChain.git
+$ git clone https://github.com/harsh-2711/Social-Chain.git
 $ cd SocialChain
 ```
 
