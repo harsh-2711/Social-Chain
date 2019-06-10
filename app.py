@@ -5,7 +5,7 @@ import json
 from flask import Flask, jsonify, request
 
 from Blockchain import Blockchain
-from database import TransactionDB, LocalTransactionDB
+from database import TransactionDB, LocalTransactionDB, NodeDB
 from transactions import Transaction
 
 import account
@@ -39,6 +39,8 @@ def new_account():
         'Public Key': public_key,
         'Address': address
     }
+    node_db = NodeDB()
+    node_db.insert(miner)
     return jsonify(response), 200
 
 @app.route('/get_account', methods=['GET'])
@@ -105,7 +107,7 @@ def new_transaction():
     # Create a new Transaction
     transaction = Transaction(values['sender'], values['recipient'], values['amount'])
     index = transaction.addToLocalDB()
-    
+
     #index = blockchain.new_transaction(values['sender'], values['recipient'], values['amount'])
 
     response = {'message': f'Transaction will be added to Block {index-1}'}
@@ -156,7 +158,9 @@ def register_nodes():
     if nodes is None:
         return "Error: Please supply a valid list of nodes", 400
 
+    node_db = NodeDB()
     for node in nodes:
+        node_db.insert(node)
         blockchain.register_node(node)
 
     response = {
